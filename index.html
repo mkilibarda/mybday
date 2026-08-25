@@ -223,13 +223,28 @@ a.time:hover,a.time:focus-visible{ color:var(--accent); border-color:var(--ink);
 .already.is-shown{ opacity:1; translate:0 0; }
 .chip input:focus-visible + span{ outline:3px solid var(--accent); outline-offset:3px; }
 
-.payid{ font-family:var(--mono); font-size:.72rem; letter-spacing:.18em;
-        text-transform:uppercase; color:var(--ink-60);
-        margin:1.9rem 0 0; padding:1.05rem 1.3rem;
-        border:2px dashed var(--ink-40); display:flex; flex-wrap:wrap;
-        align-items:center; gap:.3rem 1rem; }
-.payid strong{ font-family:var(--display); font-weight:900; color:var(--ink);
-               font-size:1.75em; letter-spacing:.03em; }
+.payid{ margin:2rem 0 0; padding:1.1rem 0 1.1rem 1.35rem;
+        border-left:3px solid var(--accent); display:grid; gap:.45rem; }
+.payid-label{ font-family:var(--mono); font-size:.62rem; letter-spacing:.28em;
+              text-transform:uppercase; color:var(--ink-40); }
+.payid-num{ font-family:var(--display); font-weight:900; color:var(--ink);
+            font-size:clamp(1.35rem,3.2vw,1.9rem); line-height:1;
+            letter-spacing:.03em; }
+.payid-note{ font-family:var(--mono); font-size:.7rem; line-height:1.6;
+             letter-spacing:.03em; color:var(--ink-60); }
+
+/* free-text name, revealed by the Stop 02 / can't-make-it boxes */
+.namefield{ padding:1.2rem 0 .5rem; }
+.namefield[hidden]{ display:none; }
+.namefield label{ display:block; font-family:var(--mono); font-size:.62rem;
+                  letter-spacing:.28em; text-transform:uppercase; color:var(--ink-40); }
+.namefield input{ display:block; width:100%; max-width:26rem; margin-top:.85rem;
+                  padding:.8rem 1rem; background:#FFFDF7; border-radius:0;
+                  border:2px solid var(--ink); color:var(--ink);
+                  font-family:var(--display); font-weight:900; letter-spacing:.02em;
+                  text-transform:uppercase; font-size:clamp(1rem,2.2vw,1.3rem); }
+.namefield input::placeholder{ color:var(--ink-40); }
+.namefield input:focus-visible{ outline:3px solid var(--accent); outline-offset:2px; }
 .btn--big{ font-size:.88rem; padding:1.35rem 2.5rem; margin-top:1.9rem; }
 .rsvp-note{ font-family:var(--mono); font-size:.66rem; line-height:1.7;
             letter-spacing:.05em; color:var(--ink-40); margin:1.2rem 0 0; }
@@ -472,8 +487,6 @@ h2.display{ font-size:clamp(2.6rem,8vw,6rem); }
       translate:-2px -2px; box-shadow:6px 6px 0 rgba(20,17,14,.25); }
 .btn--fill{ background:var(--accent); border-color:var(--accent); color:#FFF9F0; }
 .btn--fill:hover,.btn--fill:focus-visible{ background:var(--ink); border-color:var(--ink); }
-.signoff{ font-family:var(--display); font-weight:900; text-transform:uppercase;
-          font-size:clamp(2rem,6vw,3.6rem); margin:3.5rem 0 0; line-height:1; }
 footer{ padding:2.5rem 0 3.5rem; }
 footer p{ font-family:var(--mono); font-size:.6rem; letter-spacing:.2em;
           text-transform:uppercase; color:var(--ink-40); margin:0; }
@@ -703,7 +716,7 @@ footer p{ font-family:var(--mono); font-size:.6rem; letter-spacing:.2em;
     </figure>
 
     <div class="wrap post-band">
-      <p class="kicker reveal" style="--d:0">What happens in Hidley St, stays in Hindley St...</p>
+      <p class="kicker reveal" style="--d:0">What happens on Hindley, stays on Hindley...</p>
     </div>
   </section>
 
@@ -717,12 +730,12 @@ footer p{ font-family:var(--mono); font-size:.6rem; letter-spacing:.2em;
       </div>
       <!-- ═══ RSVP FORM ═══════════════════════════════════════════
            Static hosting can't send mail, so this posts to FormSubmit,
-           which forwards it to miljan@miljankilibarda.com. The FIRST
+           which forwards it to Miljan. The FIRST
            submission from the live domain triggers a one-off confirmation
            email you must click before any others come through.
            To swap services later, change only the form's action=. ══ -->
       <form class="rsvp-form reveal" style="--d:2" id="rsvpForm"
-            action="https://formsubmit.co/miljan@miljankilibarda.com" method="POST">
+            action="https://formsubmit.co/bd97ecf91d2505eed73d18bad2c15c9f" method="POST">
 
         <input type="hidden" name="_subject" value="Miljan's 30th — RSVP">
         <input type="hidden" name="_template" value="table">
@@ -751,6 +764,7 @@ footer p{ font-family:var(--mono); font-size:.6rem; letter-spacing:.2em;
             <label class="chip"><input type="checkbox" name="Who" value="Dan"><span>Dan</span></label>
             <label class="chip"><input type="checkbox" name="Who" value="Nick"><span>Nick</span></label>
             <label class="chip"><input type="checkbox" name="Who" value="Tim"><span>Tim</span></label>
+            <label class="chip"><input type="checkbox" name="Who" value="Matthew"><span>Matthew</span></label>
           </div>
           <p class="already" id="alreadyMsg" aria-live="polite">
             &hellip; but you&rsquo;ve already checked in!
@@ -763,6 +777,12 @@ footer p{ font-family:var(--mono); font-size:.6rem; letter-spacing:.2em;
           <span class="check-text">Yes, I will be there for Stop 02 &mdash; your place!</span>
         </label>
 
+        <div class="namefield" id="rsvpNameWrap" hidden>
+          <label for="rsvpName">Your name</label>
+          <input type="text" id="rsvpName" name="Name" autocomplete="name"
+                 placeholder="Who are you?">
+        </div>
+
         <label class="check is-locked">
           <input type="checkbox" checked disabled>
           <span class="box"></span>
@@ -772,18 +792,26 @@ footer p{ font-family:var(--mono); font-size:.6rem; letter-spacing:.2em;
         <!-- disabled inputs are never submitted, so this carries the value -->
         <input type="hidden" name="Hindley St" value="YES (not optional)">
 
-        <p class="payid">
-          <span>Pay ID</span><strong>042 4940 640</strong>
-        </p>
+        <label class="check">
+          <input type="checkbox" name="Can't make it" value="YES" id="rsvpNope">
+          <span class="box"></span>
+          <span class="check-text">Sorry, I can&rsquo;t make it</span>
+        </label>
 
-        <button class="btn btn--fill btn--big" type="submit">Click me PLEASE</button>
+        <div class="payid">
+          <span class="payid-label">Pay ID</span>
+          <span class="payid-num">042 4940 640</span>
+          <!-- EDIT: reword this however you like -->
+          <span class="payid-note">For go-karting &mdash; $110, whenever suits.</span>
+        </div>
+
+        <button class="btn btn--fill btn--big" type="submit">Submit</button>
 
         <p class="rsvp-note">
           Or just text me on <a href="tel:+61424940640">0424 940 640</a>.
         </p>
       </form>
 
-      <p class="signoff split">&mdash; Miljan</p>
     </div>
   </section>
 
@@ -1003,15 +1031,38 @@ footer p{ font-family:var(--mono); font-size:.6rem; letter-spacing:.2em;
       if (checkedIn.has(b.value)) nag();
     }));
 
-    /* the name picker belongs to go-karting only */
+    const nope     = document.getElementById('rsvpNope');
+    const nameWrap = document.getElementById('rsvpNameWrap');
+    const nameIn   = document.getElementById('rsvpName');
+
+    /* the chip picker belongs to go-karting; the typed name belongs to
+       Stop 02 and to "can't make it" */
     const sync = () => {
       who.hidden = !kart.checked;
       if (!kart.checked) {          /* hidden boxes would still submit */
         boxes.forEach(b => { b.checked = false; });
         msg.classList.remove('is-shown');
       }
+      nameWrap.hidden = !(house.checked || nope.checked);
+      if (nameWrap.hidden) nameIn.value = '';   /* don't submit stale text */
+
+      /* the field follows whichever box asked for it, so it always opens
+         directly underneath the thing that was just ticked */
+      const host = nope.checked  ? nope.closest('.check')
+                 : house.checked ? house.closest('.check')
+                 : null;
+      if (host && host.nextElementSibling !== nameWrap) host.after(nameWrap);
     };
-    kart.addEventListener('change', sync);
+
+    /* saying no and saying yes are mutually exclusive */
+    [kart, house].forEach(b => b.addEventListener('change', () => {
+      if (b.checked) nope.checked = false;
+      sync();
+    }));
+    nope.addEventListener('change', () => {
+      if (nope.checked) { kart.checked = false; house.checked = false; }
+      sync();
+    });
     sync();
 
     /* come back to this page after submitting, wherever it ends up hosted */
@@ -1023,15 +1074,22 @@ footer p{ font-family:var(--mono); font-size:.6rem; letter-spacing:.2em;
 
     form.addEventListener('submit', e => {
       const picked = boxes.filter(b => b.checked);
-      if (!kart.checked && !house.checked) {
+      if (!kart.checked && !house.checked && !nope.checked) {
         e.preventDefault();
-        alert('Tick at least one thing you are coming to.');
+        alert('Tick something — coming, or not coming.');
         return;
       }
-      /* only chase a name when the picker is actually on screen */
+      /* only chase chips when the picker is actually on screen */
       if (kart.checked && !picked.length) {
         e.preventDefault();
         alert('Pick your name (or names) so I know who is racing.');
+        return;
+      }
+      /* and only chase a typed name when the chips haven't already given one */
+      if (!nameWrap.hidden && !picked.length && !nameIn.value.trim()) {
+        e.preventDefault();
+        alert('Pop your name in so I know who this is.');
+        nameIn.focus();
         return;
       }
       /* remember them before the form navigates away */
